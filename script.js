@@ -1,6 +1,9 @@
 let firstNum = 0;
 let operator = '+';
 let secondNum = 0;
+let display = document.querySelector(".display");
+let numbers = document.querySelector(".numbers");
+let displayValue = 0;
 
 function add(a, b) {
     return a + b;
@@ -36,3 +39,12 @@ function operate(operator, a, b) {
             console.log("Incorrect operator");
     }
 }
+
+function populateDisplay(number) {
+    displayValue = number;
+    display.textContent = number;
+}
+
+numbers.addEventListener("click", (event) => {
+    populateDisplay(parseInt(event.target.textContent));
+});
