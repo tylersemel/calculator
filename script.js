@@ -1,9 +1,12 @@
-let firstNum = 0;
-let operator = '+';
-let secondNum = 0;
+let firstNum = '';
+let operator = '';
+let secondNum = '';
 let display = document.querySelector(".display");
-let numbers = document.querySelector(".numbers");
+const numbers = document.querySelector(".numbers");
+const functions = document.querySelector(".functions");
+
 let displayValue = 0;
+let afterOperator = false;
 
 function add(a, b) {
     return a + b;
@@ -40,11 +43,30 @@ function operate(operator, a, b) {
     }
 }
 
-function populateDisplay(number) {
-    displayValue = number;
-    display.textContent = number;
+function populateDisplay(value) {
+    displayValue = parseInt(value);
+    display.textContent = parseInt(value);
 }
 
-numbers.addEventListener("click", (event) => {
-    populateDisplay(parseInt(event.target.textContent));
+numbers.addEventListener("click", (e) => {
+    if (!afterOperator) {
+        firstNum += e.target.textContent;
+        populateDisplay(firstNum);
+    }
+    else {
+        secondNum += e.target.textContent;
+        populateDisplay(secondNum);
+    }
 });
+
+
+
+//where to get the operator
+functions.addEventListener("click", (e) => {
+    if (firstNum == '') {
+        return;
+    }
+
+    
+    populateDisplay(e.target.textContent);
+})
