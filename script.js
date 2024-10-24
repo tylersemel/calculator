@@ -24,7 +24,7 @@ const PRECISION = 2;
 // if = then call calculate and reset everything, completing the loop
 
 function checkWholeNumber(num) {
-    return num % 2 == 0;
+    return num % 1 == 0;
 }
 
 function add(a, b) {
