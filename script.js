@@ -14,7 +14,7 @@ const decimalBtn = document.querySelector(".decimal");
 
 let afterOperator = false;
 
-const PRECISION = 2;
+const PRECISION = 5;
 
 // flow: if no numbers entered, after operator is false
 // then press firstNum -> call numbers event
@@ -113,21 +113,28 @@ numbers.addEventListener("click", (e) => {
         firstNum = firstNum.toString();
         currentDisplay += e.target.textContent;
         firstNum = parseFloat(currentDisplay);
-        setDisplay(firstNum.toString());
+        setDisplay(currentDisplay);
     }
     else {
-        secondNum = secondNum.toString();
 
-        if (secondNum !== '') {
+        //there are two separate setDisplay calls because a user could do
+        //.2 on the display which would be 0.2 inside secondNum
+        if (secondNum === '' && currentDisplay === '.') {
             currentDisplay += e.target.textContent;
-            secondNum = parseFloat(currentDisplay);
+            secondNum = parseFloat(currentDisplay).toFixed(1);
+            setDisplay(currentDisplay);
+        }
+        else if (secondNum === '') {
+            secondNum = secondNum.toString();
+            secondNum = parseFloat(e.target.textContent);
+            setDisplay(secondNum.toString());
         }
         else {
-            secondNum += e.target.textContent;
-            secondNum = parseFloat(secondNum);
+            currentDisplay += e.target.textContent;
+            secondNum = parseFloat(currentDisplay);
+            setDisplay(currentDisplay);
         }
 
-        setDisplay(secondNum.toString());
         setOperatorDisplay('');
     }
 });
@@ -163,21 +170,18 @@ function calculate() {
     setDisplay(solution.toString());
 }
 
-function createNumber(val) {
-
-}
-
 //where to get the operator
 functions.addEventListener("click", (e) => {
     if (hasError) {
         return;
     }
+
+    if (displayValue === ".") {
+        error();
+        return;
+    }
     
     if (firstNum === '' && displayValue != '') {
-        if (displayValue === ".") {
-            error();
-            return;
-        }
         firstNum = parseFloat(displayValue);
     }
     if (firstNum === '') return;
@@ -198,6 +202,11 @@ functions.addEventListener("click", (e) => {
 });
 
 equalsBtn.addEventListener("click", () => {
+    if (displayValue === ".") {
+        error();
+        setOperatorDisplay('');
+        return;
+    }
     if (hasError) {
         return;
     }
@@ -217,10 +226,17 @@ function clear() {
 }
 
 decimalBtn.addEventListener("click", () => {
-    if (!displayValue.includes('.')) {
-        displayValue += '.';
+    if (!firstNum.toString().includes('.') || !secondNum.toString().includes('.')) {
+        if (firstNum !== '' && afterOperator && secondNum === '') {
+            displayValue = '.';
+            // secondNum = secondNum.toString();
+            // secondNum += '.';
+            setOperatorDisplay('');
+        }
+        else {
+            displayValue += '.';
+        }
         setDisplay(displayValue);
-        // firstNum = parseFloat(displayValue).toFixed(1);
     }
     else {
         return;
