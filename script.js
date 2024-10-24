@@ -86,37 +86,40 @@ function setOperatorDisplay(operator) {
     operatorDisplay.textContent = operator;
 }
 
-//where to get the operator
-functions.addEventListener("click", (e) => {
-    if (firstNum == '') {
-        return;
-    }
-    
-    setOperator(e.target.textContent);
-    setOperatorDisplay(operator);
-    // populateDisplay(e.target.textContent);
-    afterOperator = true;
-    // operate(operator, firstNum, secondNum);
-
-    console.log(operator);
-});
-
 function convertToInt(num) {
     return parseInt(num);
 }
+
+function calculate() {
+    firstNum = convertToInt(firstNum);
+    secondNum = convertToInt(secondNum);
+
+    operate(operator, firstNum, secondNum);
+    setDisplay(solution);
+
+    firstNum = solution;
+    secondNum = '';
+}
+
+//where to get the operator
+functions.addEventListener("click", (e) => {
+    if (firstNum === '') {
+        return;
+    }
+
+    setOperator(e.target.textContent);
+    setOperatorDisplay(operator);
+    afterOperator = true;
+
+    if (secondNum !== '') {
+        calculate();
+    }
+});
 
 equals.addEventListener("click", () => {
     if (firstNum === '' || secondNum === '') {
         return;
     }
 
-    convertToInt(firstNum);
-    convertToInt(secondNum);
-
-    operate(operator, firstNum, secondNum);
-    setDisplay(solution);
-
-    // afterOperator = false;
-    firstNum = solution;
-    secondNum = '';
+    calculate();
 });
