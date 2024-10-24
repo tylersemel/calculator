@@ -10,10 +10,12 @@ const numbers = document.querySelector(".numbers");
 const functions = document.querySelector(".functions");
 const equalsBtn = document.querySelector(".equals");
 const clearBtn = document.querySelector(".clear");
+const decimalBtn = document.querySelector(".decimal");
 
 let afterOperator = false;
 
 const PRECISION = 2;
+
 // flow: if no numbers entered, after operator is false
 // then press firstNum -> call numbers event
 // then press operator 
@@ -105,16 +107,26 @@ numbers.addEventListener("click", (e) => {
         hasError = false;
     }
 
+    let currentDisplay = displayValue;
+
     if (!afterOperator) {
         firstNum = firstNum.toString();
-        firstNum += e.target.textContent;
-        firstNum = parseFloat(firstNum);
+        currentDisplay += e.target.textContent;
+        firstNum = parseFloat(currentDisplay);
         setDisplay(firstNum.toString());
     }
     else {
         secondNum = secondNum.toString();
-        secondNum += e.target.textContent;
-        secondNum = parseFloat(secondNum);
+
+        if (secondNum !== '') {
+            currentDisplay += e.target.textContent;
+            secondNum = parseFloat(currentDisplay);
+        }
+        else {
+            secondNum += e.target.textContent;
+            secondNum = parseFloat(secondNum);
+        }
+
         setDisplay(secondNum.toString());
         setOperatorDisplay('');
     }
@@ -151,6 +163,10 @@ function calculate() {
     setDisplay(solution.toString());
 }
 
+function createNumber(val) {
+
+}
+
 //where to get the operator
 functions.addEventListener("click", (e) => {
     if (hasError) {
@@ -158,6 +174,10 @@ functions.addEventListener("click", (e) => {
     }
     
     if (firstNum === '' && displayValue != '') {
+        if (displayValue === ".") {
+            error();
+            return;
+        }
         firstNum = parseFloat(displayValue);
     }
     if (firstNum === '') return;
@@ -195,6 +215,17 @@ function clear() {
     secondNum = '';
     afterOperator = false;
 }
+
+decimalBtn.addEventListener("click", () => {
+    if (!displayValue.includes('.')) {
+        displayValue += '.';
+        setDisplay(displayValue);
+        // firstNum = parseFloat(displayValue).toFixed(1);
+    }
+    else {
+        return;
+    }
+});
 
 clearBtn.addEventListener("click", () => {
     clear();
