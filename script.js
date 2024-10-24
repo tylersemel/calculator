@@ -2,13 +2,14 @@ let firstNum = '';
 let operator = '';
 let secondNum = '';
 let solution = 0;
+let hasError = false;
 
 let display = document.querySelector(".display");
 let operatorDisplay = document.querySelector(".operator-display");
 const numbers = document.querySelector(".numbers");
 const functions = document.querySelector(".functions");
-const equals = document.querySelector(".equals");
-const clear = document.querySelector(".clear");
+const equalsBtn = document.querySelector(".equals");
+const clearBtn = document.querySelector(".clear");
 
 let afterOperator = false;
 
@@ -25,6 +26,10 @@ function multiply(a, b) {
 }
 
 function divide(a, b) {
+    if (b === 0) {
+        error();
+        return '';
+    }
     return a / b;
 }
 
@@ -45,6 +50,14 @@ function operate(operator, a, b) {
         default:
             console.log("Incorrect operator");
     }
+
+    // Math.round((solution + Number.EPSILON) * 100) / 100;
+}
+
+function error() {
+    clear();
+    setDisplay("Girl... no");
+    hasError = true;
 }
 
 function setDisplay(value) {
@@ -52,6 +65,10 @@ function setDisplay(value) {
 }
 
 numbers.addEventListener("click", (e) => {
+    if (hasError) {
+        clear();
+        hasError = false;
+    }
     if (!afterOperator) {
         firstNum += e.target.textContent;
         setDisplay(firstNum);
@@ -95,6 +112,11 @@ function calculate() {
     secondNum = convertToInt(secondNum);
 
     operate(operator, firstNum, secondNum);
+
+    if (solution === '') {
+        return;
+    }
+
     setDisplay(solution);
 
     firstNum = solution;
@@ -103,6 +125,11 @@ function calculate() {
 
 //where to get the operator
 functions.addEventListener("click", (e) => {
+    if (hasError) {
+        clear();
+        hasError = false;
+    }
+
     if (firstNum === '') {
         return;
     }
@@ -117,7 +144,12 @@ functions.addEventListener("click", (e) => {
 
 });
 
-equals.addEventListener("click", () => {
+equalsBtn.addEventListener("click", () => {
+    if (hasError) {
+        clear();
+        hasError = false;
+    }
+
     if (firstNum === '' || secondNum === '') {
         return;
     }
@@ -125,7 +157,7 @@ equals.addEventListener("click", () => {
     calculate();
 });
 
-clear.addEventListener("click", () => {
+function clear() {
     firstNum = '';
     operator = '';
     secondNum = '';
@@ -133,4 +165,9 @@ clear.addEventListener("click", () => {
     afterOperator = false;
     setDisplay('');
     setOperatorDisplay('');
+}
+
+clearBtn.addEventListener("click", () => {
+    clear();
+    hasError = false;
 });
