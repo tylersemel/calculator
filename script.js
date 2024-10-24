@@ -3,6 +3,7 @@ let operator = '';
 let secondNum = '';
 let solution = 0;
 let hasError = false;
+let displayValue = '';
 
 let display = document.querySelector(".display");
 let operatorDisplay = document.querySelector(".operator-display");
@@ -50,8 +51,6 @@ function operate(operator, a, b) {
         default:
             console.log("Incorrect operator");
     }
-
-    // Math.round((solution + Number.EPSILON) * 100) / 100;
 }
 
 function error() {
@@ -62,13 +61,17 @@ function error() {
 
 function setDisplay(value) {
     display.textContent = value;
+    displayValue = value;
 }
 
 numbers.addEventListener("click", (e) => {
     if (hasError) {
         clear();
+        setDisplay('');
+        setOperatorDisplay('');
         hasError = false;
     }
+
     if (!afterOperator) {
         firstNum += e.target.textContent;
         setDisplay(firstNum);
@@ -113,9 +116,7 @@ function calculate() {
 
     operate(operator, firstNum, secondNum);
 
-    if (solution === '') {
-        return;
-    }
+    if (solution === '') return;
 
     setDisplay(solution);
 
@@ -127,34 +128,33 @@ function calculate() {
 functions.addEventListener("click", (e) => {
     if (hasError) {
         clear();
+        setDisplay('');
+        setOperatorDisplay('');
         hasError = false;
     }
 
-    if (firstNum === '') {
-        return;
-    }
-
-    if (secondNum !== '') {
-        calculate();
-    }
+    if (displayValue != '') firstNum = displayValue;
+    if (firstNum === '') return;
+    if (secondNum !== '') calculate();
 
     setOperator(e.target.textContent);
     setOperatorDisplay(operator);
     afterOperator = true;
-
 });
 
 equalsBtn.addEventListener("click", () => {
     if (hasError) {
         clear();
+        setDisplay('');
+        setOperatorDisplay('');
         hasError = false;
     }
-
-    if (firstNum === '' || secondNum === '') {
-        return;
-    }
+    
+    if (displayValue != '') setDisplay(displayValue);
+    if (firstNum === '' || secondNum === '') return;
 
     calculate();
+    clear();
 });
 
 function clear() {
@@ -163,11 +163,11 @@ function clear() {
     secondNum = '';
     solution = '';
     afterOperator = false;
-    setDisplay('');
-    setOperatorDisplay('');
 }
 
 clearBtn.addEventListener("click", () => {
     clear();
+    setDisplay('');
+    setOperatorDisplay('');
     hasError = false;
 });
