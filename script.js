@@ -1,7 +1,6 @@
 let firstNum = '';
 let operator = '';
 let secondNum = '';
-let solution = 0;
 let hasError = false;
 let displayValue = '';
 
@@ -13,6 +12,13 @@ const equalsBtn = document.querySelector(".equals");
 const clearBtn = document.querySelector(".clear");
 
 let afterOperator = false;
+
+// flow: if no numbers entered, after operator is false
+// then press firstNum -> call numbers event
+// then press operator 
+// then press secondNum 
+// either then press = or another operator
+// if = then call calculate and reset everything, completing the loop
 
 function add(a, b) {
     return a + b;
@@ -29,7 +35,7 @@ function multiply(a, b) {
 function divide(a, b) {
     if (b === 0) {
         error();
-        return '';
+        return;
     }
     return a / b;
 }
@@ -37,19 +43,16 @@ function divide(a, b) {
 function operate(operator, a, b) {
     switch (operator) {
         case '+':
-            solution = add(a, b);
-            break;
+            return add(a, b);
         case '-':
-            solution = subtract(a, b);
-            break;
+            return subtract(a, b);
         case '*':
-            solution = multiply(a, b);
-            break;
+            return multiply(a, b);
         case '/':
-            solution = divide(a, b);
-            break;
+            return divide(a, b);
         default:
             console.log("Incorrect operator");
+            return;
     }
 }
 
@@ -73,12 +76,16 @@ numbers.addEventListener("click", (e) => {
     }
 
     if (!afterOperator) {
+        firstNum = firstNum.toString();
         firstNum += e.target.textContent;
-        setDisplay(firstNum);
+        firstNum = parseInt(firstNum);
+        setDisplay(firstNum.toString());
     }
     else {
+        secondNum = secondNum.toString();
         secondNum += e.target.textContent;
-        setDisplay(secondNum);
+        secondNum = parseInt(secondNum);
+        setDisplay(secondNum.toString());
         setOperatorDisplay('');
     }
 });
@@ -106,36 +113,32 @@ function setOperatorDisplay(operator) {
     operatorDisplay.textContent = operator;
 }
 
-function convertToInt(num) {
-    return parseInt(num);
-}
-
 function calculate() {
-    firstNum = convertToInt(firstNum);
-    secondNum = convertToInt(secondNum);
+    let solution = operate(operator, firstNum, secondNum);
 
-    operate(operator, firstNum, secondNum);
+    if (solution == null) return;
 
-    if (solution === '') return;
-
-    setDisplay(solution);
-
-    firstNum = solution;
-    secondNum = '';
+    setDisplay(solution.toString());
 }
 
 //where to get the operator
 functions.addEventListener("click", (e) => {
     if (hasError) {
-        clear();
-        setDisplay('');
-        setOperatorDisplay('');
-        hasError = false;
+        return;
     }
-
-    if (displayValue != '') firstNum = displayValue;
+    
+    if (firstNum === '' && displayValue != '') firstNum = parseInt(displayValue);
     if (firstNum === '') return;
-    if (secondNum !== '') calculate();
+    if (secondNum !== '') {
+        calculate();
+        clear();
+        if (hasError) {
+            return;
+        }
+        else {
+            firstNum = parseInt(displayValue);
+        }
+    }
 
     setOperator(e.target.textContent);
     setOperatorDisplay(operator);
@@ -144,12 +147,9 @@ functions.addEventListener("click", (e) => {
 
 equalsBtn.addEventListener("click", () => {
     if (hasError) {
-        clear();
-        setDisplay('');
-        setOperatorDisplay('');
-        hasError = false;
+        return;
     }
-    
+
     if (displayValue != '') setDisplay(displayValue);
     if (firstNum === '' || secondNum === '') return;
 
@@ -161,7 +161,6 @@ function clear() {
     firstNum = '';
     operator = '';
     secondNum = '';
-    solution = '';
     afterOperator = false;
 }
 
