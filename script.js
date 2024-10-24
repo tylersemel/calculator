@@ -2,13 +2,14 @@ let firstNum = '';
 let operator = '';
 let secondNum = '';
 let solution = 0;
+
 let display = document.querySelector(".display");
 let operatorDisplay = document.querySelector(".operator-display");
 const numbers = document.querySelector(".numbers");
 const functions = document.querySelector(".functions");
 const equals = document.querySelector(".equals");
+const clear = document.querySelector(".clear");
 
-let displayValue = 0;
 let afterOperator = false;
 
 function add(a, b) {
@@ -47,7 +48,6 @@ function operate(operator, a, b) {
 }
 
 function setDisplay(value) {
-    displayValue = value;
     display.textContent = value;
 }
 
@@ -107,13 +107,14 @@ functions.addEventListener("click", (e) => {
         return;
     }
 
+    if (secondNum !== '') {
+        calculate();
+    }
+
     setOperator(e.target.textContent);
     setOperatorDisplay(operator);
     afterOperator = true;
 
-    if (secondNum !== '') {
-        calculate();
-    }
 });
 
 equals.addEventListener("click", () => {
@@ -122,4 +123,14 @@ equals.addEventListener("click", () => {
     }
 
     calculate();
+});
+
+clear.addEventListener("click", () => {
+    firstNum = '';
+    operator = '';
+    secondNum = '';
+    solution = '';
+    afterOperator = false;
+    setDisplay('');
+    setOperatorDisplay('');
 });
