@@ -13,6 +13,7 @@ const clearBtn = document.querySelector(".clear");
 
 let afterOperator = false;
 
+const PRECISION = 2;
 // flow: if no numbers entered, after operator is false
 // then press firstNum -> call numbers event
 // then press operator 
@@ -20,16 +21,38 @@ let afterOperator = false;
 // either then press = or another operator
 // if = then call calculate and reset everything, completing the loop
 
+function checkWholeNumber(num) {
+    return num % 2 == 0;
+}
+
 function add(a, b) {
-    return a + b;
+    let sum = a + b;
+
+    if (!checkWholeNumber(sum)) {
+        return (a + b).toFixed(PRECISION);
+    }
+
+    return sum;
 }
 
 function subtract(a, b) {
-    return a - b;
+    let sum = a - b;
+
+    if (!checkWholeNumber(sum)) {
+        return (a - b).toFixed(PRECISION);
+    }
+
+    return sum;
 }
 
 function multiply(a, b) {
-    return a * b;
+    let product = a * b;
+
+    if (!checkWholeNumber(product)) {
+        return (a * b).toFixed(PRECISION);
+    }
+
+    return product;
 }
 
 function divide(a, b) {
@@ -37,7 +60,14 @@ function divide(a, b) {
         error();
         return;
     }
-    return a / b;
+
+    let product = a / b;
+
+    if (!checkWholeNumber(product)) {
+        return (a / b).toFixed(PRECISION);
+    }
+
+    return product;
 }
 
 function operate(operator, a, b) {
@@ -78,13 +108,13 @@ numbers.addEventListener("click", (e) => {
     if (!afterOperator) {
         firstNum = firstNum.toString();
         firstNum += e.target.textContent;
-        firstNum = parseInt(firstNum);
+        firstNum = parseFloat(firstNum);
         setDisplay(firstNum.toString());
     }
     else {
         secondNum = secondNum.toString();
         secondNum += e.target.textContent;
-        secondNum = parseInt(secondNum);
+        secondNum = parseFloat(secondNum);
         setDisplay(secondNum.toString());
         setOperatorDisplay('');
     }
@@ -127,7 +157,9 @@ functions.addEventListener("click", (e) => {
         return;
     }
     
-    if (firstNum === '' && displayValue != '') firstNum = parseInt(displayValue);
+    if (firstNum === '' && displayValue != '') {
+        firstNum = parseFloat(displayValue);
+    }
     if (firstNum === '') return;
     if (secondNum !== '') {
         calculate();
@@ -136,7 +168,7 @@ functions.addEventListener("click", (e) => {
             return;
         }
         else {
-            firstNum = parseInt(displayValue);
+            firstNum = parseFloat(displayValue);
         }
     }
 
