@@ -3,17 +3,29 @@ let operator = '';
 let secondNum = '';
 let hasError = false;
 let displayValue = '';
+let solution = '';
 
 let display = document.querySelector(".display");
 let operatorDisplay = document.querySelector(".operator-display");
-const numbers = document.querySelector(".numbers");
-const functions = document.querySelector(".functions");
-const equalsBtn = document.querySelector(".equals");
-const clearBtn = document.querySelector(".clear");
+// const numbers = document.querySelector(".numbers");
+// const functions = document.querySelector(".operators");
+// const equalsBtn = document.querySelector(".equals");
+// const clearBtn = document.querySelector(".clear");
 
-let afterOperator = false;
+const buttons = document.querySelector("#buttons");
+
+let firstNumFilled = false;
 
 const PRECISION = 2;
+const ERROR_MESSAGE = "Girl... no";
+
+// const calculator = {
+//     firstNum: '',
+//     let operator = '';
+//     let secondNum = '';
+//     let hasError = false;
+//     let displayValue = '';
+// }
 // flow: if no numbers entered, after operator is false
 // then press firstNum -> call numbers event
 // then press operator 
@@ -22,7 +34,7 @@ const PRECISION = 2;
 // if = then call calculate and reset everything, completing the loop
 
 function checkWholeNumber(num) {
-    return num % 2 == 0;
+    return num % 1 == 0;
 }
 
 function add(a, b) {
@@ -86,39 +98,15 @@ function operate(operator, a, b) {
     }
 }
 
-function error() {
-    clear();
-    setDisplay("Girl... no");
-    hasError = true;
-}
+// function setError() {
+//     hasError = true;
+//     setDisplay(ERROR_MESSAGE);
+// }
 
 function setDisplay(value) {
     display.textContent = value;
     displayValue = value;
 }
-
-numbers.addEventListener("click", (e) => {
-    if (hasError) {
-        clear();
-        setDisplay('');
-        setOperatorDisplay('');
-        hasError = false;
-    }
-
-    if (!afterOperator) {
-        firstNum = firstNum.toString();
-        firstNum += e.target.textContent;
-        firstNum = parseFloat(firstNum);
-        setDisplay(firstNum.toString());
-    }
-    else {
-        secondNum = secondNum.toString();
-        secondNum += e.target.textContent;
-        secondNum = parseFloat(secondNum);
-        setDisplay(secondNum.toString());
-        setOperatorDisplay('');
-    }
-});
 
 function setOperator(operatorVal) {
     switch (operatorVal) {
@@ -148,57 +136,125 @@ function calculate() {
 
     if (solution == null) return;
 
-    setDisplay(solution.toString());
+    return solution;
 }
 
-//where to get the operator
-functions.addEventListener("click", (e) => {
-    if (hasError) {
-        return;
-    }
-    
-    if (firstNum === '' && displayValue != '') {
-        firstNum = parseFloat(displayValue);
-    }
-    if (firstNum === '') return;
-    if (secondNum !== '') {
-        calculate();
-        clear();
-        if (hasError) {
-            return;
-        }
-        else {
-            firstNum = parseFloat(displayValue);
-        }
-    }
-
-    setOperator(e.target.textContent);
-    setOperatorDisplay(operator);
-    afterOperator = true;
-});
-
-equalsBtn.addEventListener("click", () => {
-    if (hasError) {
-        return;
-    }
-
-    if (displayValue != '') setDisplay(displayValue);
-    if (firstNum === '' || secondNum === '') return;
-
-    calculate();
-    clear();
-});
 
 function clear() {
     firstNum = '';
     operator = '';
     secondNum = '';
-    afterOperator = false;
+    firstNumFilled = false;
+    hasError = false;
 }
 
-clearBtn.addEventListener("click", () => {
-    clear();
-    setDisplay('');
+// function setNumberAndDisplay(target) {
+//     if (firstNumFilled && firstNum === '' && displayValue != '') {
+//         firstNum = parseFloat(displayValue);
+//     }
+//     else if (firstNumFilled) {
+//         firstNum = firstNum.toString();
+//         firstNum += target.textContent;
+//         firstNum = parseFloat(firstNum);
+//         setDisplay(firstNum.toString());
+//     }
+//     else {
+//         secondNum = secondNum.toString();
+//         secondNum += target.textContent;
+//         secondNum = parseFloat(secondNum);
+//         setDisplay(secondNum.toString());
+//         setOperatorDisplay('');
+//     }
+// }
+
+
+
+
+
+
+
+
+
+
+
+function clickNumber(numberText) {
+    if (!firstNumFilled && firstNum !== solution) {
+        firstNum += numberText;
+        firstNum = parseFloat(firstNum);
+        setDisplay(firstNum);
+    }
+    else {
+        secondNum += numberText;
+        secondNum = parseFloat(secondNum);
+        setDisplay(secondNum);
+        setOperatorDisplay('');
+    }
+}
+
+
+/**
+ * When an operator button is clicked. If firstNum is empty, do nothing. Otherwise
+ * set that the first num has been filled along with the operator.
+ * @param {string} operatorText 
+ * @returns Nothing.
+ */
+function clickOperator(operatorText) {
+    if (firstNum === '' && displayValue === '') return;
+
+    if (firstNum !== '' && !firstNumFilled) {
+        firstNumFilled = true;
+    }
+    else if (secondNum !== '') {
+        clickEquals();
+    }
+
+    setOperator(operatorText);
+    setOperatorDisplay(operatorText);
+}
+
+function clickEquals() {
+    if (firstNum === '' && secondNum === '') return;
+    solution = calculate(operator, firstNum, secondNum);
+    if (solution === null) return;
+    setDisplay(solution);
     setOperatorDisplay('');
-    hasError = false;
+    clear();
+    firstNum = solution;
+}
+
+
+function setResultAndDisplay() {
+    if (displayValue != '') setDisplay(displayValue);
+    if (firstNum === '' || secondNum === '') return;
+
+    let solution = calculate().toString();
+    setDisplay(solution);
+}
+
+
+buttons.addEventListener("click", (e) => {
+    let targetId = null;
+
+    if (e.target.matches('button')) {
+        targetId = e.target.parentNode.id && e.target.parentNode.id !== "buttons" ? e.target.parentNode.id : e.target.id;
+    }
+
+    switch(targetId) {
+        case "numbers":
+            clickNumber(e.target.textContent);
+            break;
+        case "operators":
+            clickOperator(e.target.textContent);
+            break;
+        case "equals":
+            clickEquals();
+            break;
+        case "clear":
+            clear();
+            setDisplay('');
+            setOperatorDisplay('');
+            break;
+        default:
+            console.log("Incorrect");
+    }
 });
