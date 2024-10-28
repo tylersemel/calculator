@@ -114,7 +114,7 @@ function setOperatorDisplay(operator) {
 }
 
 function calculate() {
-    let solution = operate(operator, firstNum, secondNum);
+    let solution = parseFloat(operate(operator, firstNum, secondNum));
 
     if (solution == null) return;
 
