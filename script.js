@@ -11,7 +11,7 @@ const buttons = document.querySelector("#buttons");
 let firstNumFilled = false;
 
 const PRECISION = 2;
-const ERROR_MESSAGE = "Girl... no";
+const ERROR_MESSAGE = "Hrmmm not quite";
 
 // flow: if no numbers entered, after operator is false
 // then press firstNum -> call numbers event
@@ -56,33 +56,47 @@ function multiply(a, b) {
 
 function divide(a, b) {
     if (b === 0) {
-        error();
-        return;
+        displayError(ERROR_MESSAGE);
+        return null;
     }
 
     let product = a / b;
 
     if (!checkWholeNumber(product)) {
-        return (a / b).toFixed(PRECISION);
+        return parseFloat((a / b).toFixed(PRECISION));
     }
 
     return product;
 }
 
 function operate(operator, a, b) {
+    let result = null;
+
     switch (operator) {
         case '+':
-            return add(a, b);
+            result = add(a, b);
+            break;
         case '-':
-            return subtract(a, b);
+            result = subtract(a, b);
+            break;
         case '*':
-            return multiply(a, b);
+            result = multiply(a, b);
+            break;
         case '/':
-            return divide(a, b);
+            result = divide(a, b);
+            break;
         default:
             console.log("Incorrect operator");
-            return;
     }
+
+    return result;
+}
+
+function displayError(error) {
+    setDisplay(error);
+    setOperatorDisplay('');
+    clear();
+    hasError = true;
 }
 
 function setDisplay(value) {
@@ -113,15 +127,6 @@ function setOperatorDisplay(operator) {
     operatorDisplay.textContent = operator;
 }
 
-function calculate() {
-    let solution = parseFloat(operate(operator, firstNum, secondNum));
-
-    if (solution == null) return;
-
-    return solution;
-}
-
-
 function clear() {
     firstNum = '';
     operator = '';
@@ -146,7 +151,6 @@ function clickNumber(numberText) {
     }
 }
 
-
 /**
  * When an operator button is clicked. If firstNum is empty, do nothing. Otherwise
  * set that the first num has been filled along with the operator.
@@ -168,20 +172,23 @@ function clickOperator(operatorText) {
         firstNumFilled = true;
     }
 
-    setOperator(operatorText);
-    setOperatorDisplay(operatorText);
+    if (!hasError) {
+        setOperator(operatorText);
+        setOperatorDisplay(operatorText);
+    }
 }
 
 function clickEquals() {
     if (firstNum === '' || secondNum === '') return;
 
-    const solution = calculate(operator, firstNum, secondNum);
+    const solution = operate(operator, firstNum, secondNum);
 
-    if (solution === null) return;
-
-    setDisplay(solution.toString());
-    setOperatorDisplay('');
-    clear();
+    if (solution !== null) {
+        setDisplay(solution);
+        setOperatorDisplay('');
+        clear();
+    }
+    
     return solution;
 }
 
@@ -190,6 +197,18 @@ buttons.addEventListener("click", (e) => {
 
     if (e.target.matches('button')) {
         targetId = e.target.parentNode.id && e.target.parentNode.id !== "buttons" ? e.target.parentNode.id : e.target.id;
+    }
+
+    if (hasError &&
+        (targetId === "numbers" ||
+        targetId === "clear" ||
+        targetId === "equals"          
+        )) {
+            clear();
+            hasError = false;
+    }
+    else if (hasError) {
+        return;
     }
 
     switch(targetId) {
