@@ -28,7 +28,7 @@ function add(a, b) {
     let sum = a + b;
 
     if (!checkWholeNumber(sum)) {
-        return (a + b).toFixed(PRECISION);
+        return parseFloat((a + b).toFixed(PRECISION));
     }
 
     return sum;
@@ -38,7 +38,7 @@ function subtract(a, b) {
     let sum = a - b;
 
     if (!checkWholeNumber(sum)) {
-        return (a - b).toFixed(PRECISION);
+        return parseFloat((a - b).toFixed(PRECISION));
     }
 
     return sum;
@@ -48,7 +48,7 @@ function multiply(a, b) {
     let product = a * b;
 
     if (!checkWholeNumber(product)) {
-        return (a * b).toFixed(PRECISION);
+        return parseFloat((a * b).toFixed(PRECISION));
     }
 
     return product;
@@ -137,16 +137,16 @@ function clear() {
 
 function clickNumber(numberText) {
     if (!firstNumFilled) {
-        firstNum = firstNum.toString();
+        firstNum = displayValue.toString();
         firstNum += numberText;
-        firstNum = parseFloat(firstNum);
         setDisplay(firstNum);
+        firstNum = parseFloat(firstNum);
     }
     else {
         secondNum = secondNum.toString();
         secondNum += numberText;
-        secondNum = parseFloat(secondNum);
         setDisplay(secondNum);
+        secondNum = parseFloat(secondNum);
         setOperatorDisplay('');
     }
 }
@@ -192,6 +192,36 @@ function clickEquals() {
     return solution;
 }
 
+/**
+ * Sets the firstNum and secondNum to have a decimal point if there
+ * is not already one present.
+ * @returns Nothing.
+ */
+function clickDecimal() {
+    if ((!firstNumFilled && firstNum.toString().includes('.')) ||
+        (firstNumFilled && secondNum.toString().includes('.'))) {
+        return;
+    }
+    else if (!firstNumFilled && firstNum == '') {
+        firstNum = '.';
+        setDisplay('.');
+    }
+    else if (!firstNumFilled && firstNum !== '') {
+        firstNum = firstNum.toString();
+        firstNum += '.';
+        setDisplay(firstNum);
+    }
+    else if (secondNum === '') {
+        secondNum = '0.0';
+        setDisplay('.');
+    }
+    else {
+        secondNum = secondNum.toString();
+        secondNum += '.';
+        setDisplay(secondNum);
+    }
+}
+
 buttons.addEventListener("click", (e) => {
     let targetId = null;
 
@@ -217,6 +247,9 @@ buttons.addEventListener("click", (e) => {
             break;
         case "operators":
             clickOperator(e.target.textContent);
+            break;
+        case "decimal":
+            clickDecimal();
             break;
         case "equals":
             clickEquals();
