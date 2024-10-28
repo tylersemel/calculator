@@ -3,15 +3,9 @@ let operator = '';
 let secondNum = '';
 let hasError = false;
 let displayValue = '';
-let solution = '';
 
 let display = document.querySelector(".display");
 let operatorDisplay = document.querySelector(".operator-display");
-// const numbers = document.querySelector(".numbers");
-// const functions = document.querySelector(".operators");
-// const equalsBtn = document.querySelector(".equals");
-// const clearBtn = document.querySelector(".clear");
-
 const buttons = document.querySelector("#buttons");
 
 let firstNumFilled = false;
@@ -19,13 +13,6 @@ let firstNumFilled = false;
 const PRECISION = 2;
 const ERROR_MESSAGE = "Girl... no";
 
-// const calculator = {
-//     firstNum: '',
-//     let operator = '';
-//     let secondNum = '';
-//     let hasError = false;
-//     let displayValue = '';
-// }
 // flow: if no numbers entered, after operator is false
 // then press firstNum -> call numbers event
 // then press operator 
@@ -98,11 +85,6 @@ function operate(operator, a, b) {
     }
 }
 
-// function setError() {
-//     hasError = true;
-//     setDisplay(ERROR_MESSAGE);
-// }
-
 function setDisplay(value) {
     display.textContent = value;
     displayValue = value;
@@ -148,42 +130,15 @@ function clear() {
     hasError = false;
 }
 
-// function setNumberAndDisplay(target) {
-//     if (firstNumFilled && firstNum === '' && displayValue != '') {
-//         firstNum = parseFloat(displayValue);
-//     }
-//     else if (firstNumFilled) {
-//         firstNum = firstNum.toString();
-//         firstNum += target.textContent;
-//         firstNum = parseFloat(firstNum);
-//         setDisplay(firstNum.toString());
-//     }
-//     else {
-//         secondNum = secondNum.toString();
-//         secondNum += target.textContent;
-//         secondNum = parseFloat(secondNum);
-//         setDisplay(secondNum.toString());
-//         setOperatorDisplay('');
-//     }
-// }
-
-
-
-
-
-
-
-
-
-
-
 function clickNumber(numberText) {
-    if (!firstNumFilled && firstNum !== solution) {
+    if (!firstNumFilled) {
+        firstNum = firstNum.toString();
         firstNum += numberText;
         firstNum = parseFloat(firstNum);
         setDisplay(firstNum);
     }
     else {
+        secondNum = secondNum.toString();
         secondNum += numberText;
         secondNum = parseFloat(secondNum);
         setDisplay(secondNum);
@@ -201,11 +156,16 @@ function clickNumber(numberText) {
 function clickOperator(operatorText) {
     if (firstNum === '' && displayValue === '') return;
 
+    if (firstNum === '' && displayValue !== '') {
+        firstNum = parseFloat(displayValue);
+    }
+
     if (firstNum !== '' && !firstNumFilled) {
         firstNumFilled = true;
     }
     else if (secondNum !== '') {
-        clickEquals();
+        firstNum = clickEquals();
+        firstNumFilled = true;
     }
 
     setOperator(operatorText);
@@ -213,24 +173,17 @@ function clickOperator(operatorText) {
 }
 
 function clickEquals() {
-    if (firstNum === '' && secondNum === '') return;
-    solution = calculate(operator, firstNum, secondNum);
-    if (solution === null) return;
-    setDisplay(solution);
-    setOperatorDisplay('');
-    clear();
-    firstNum = solution;
-}
-
-
-function setResultAndDisplay() {
-    if (displayValue != '') setDisplay(displayValue);
     if (firstNum === '' || secondNum === '') return;
 
-    let solution = calculate().toString();
-    setDisplay(solution);
-}
+    const solution = calculate(operator, firstNum, secondNum);
 
+    if (solution === null) return;
+
+    setDisplay(solution.toString());
+    setOperatorDisplay('');
+    clear();
+    return solution;
+}
 
 buttons.addEventListener("click", (e) => {
     let targetId = null;
@@ -255,6 +208,6 @@ buttons.addEventListener("click", (e) => {
             setOperatorDisplay('');
             break;
         default:
-            console.log("Incorrect");
+            console.log("Did not click a button");
     }
 });
