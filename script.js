@@ -2,7 +2,7 @@ let firstNum = '';
 let operator = '';
 let secondNum = '';
 let hasError = false;
-let displayValue = '';
+let displayValue = '0';
 
 let display = document.querySelector(".display");
 let operatorDisplay = document.querySelector(".operator-display");
@@ -10,7 +10,7 @@ const buttons = document.querySelector("#buttons");
 
 let firstNumFilled = false;
 
-const PRECISION = 2;
+const PRECISION = 5;
 const ERROR_MESSAGE = "Hrmmm not quite";
 
 // flow: if no numbers entered, after operator is false
@@ -25,33 +25,27 @@ function checkWholeNumber(num) {
 }
 
 function add(a, b) {
-    let sum = a + b;
-
-    if (!checkWholeNumber(sum)) {
+    if (!checkWholeNumber(a + b)) {
         return parseFloat((a + b).toFixed(PRECISION));
     }
 
-    return sum;
+    return a + b;
 }
 
 function subtract(a, b) {
-    let sum = a - b;
-
-    if (!checkWholeNumber(sum)) {
+    if (!checkWholeNumber(a - b)) {
         return parseFloat((a - b).toFixed(PRECISION));
     }
 
-    return sum;
+    return a - b;
 }
 
 function multiply(a, b) {
-    let product = a * b;
-
-    if (!checkWholeNumber(product)) {
+    if (!checkWholeNumber(a * b)) {
         return parseFloat((a * b).toFixed(PRECISION));
     }
 
-    return product;
+    return a * b;
 }
 
 function divide(a, b) {
@@ -60,13 +54,11 @@ function divide(a, b) {
         return null;
     }
 
-    let product = a / b;
-
-    if (!checkWholeNumber(product)) {
+    if (!checkWholeNumber(a / b)) {
         return parseFloat((a / b).toFixed(PRECISION));
     }
 
-    return product;
+    return a / b;
 }
 
 function operate(operator, a, b) {
@@ -124,7 +116,7 @@ function setOperator(operatorVal) {
 }
 
 function setOperatorDisplay(operator) {
-    operatorDisplay.textContent = operator;
+    operatorDisplay.textContent = '';//operator;
 }
 
 function clear() {
@@ -137,16 +129,14 @@ function clear() {
 
 function clickNumber(numberText) {
     if (!firstNumFilled) {
-        firstNum = displayValue.toString();
-        firstNum += numberText;
+        firstNum = firstNum.toString();
+        firstNum = firstNum === '0' ? numberText : firstNum + numberText;
         setDisplay(firstNum);
-        firstNum = parseFloat(firstNum);
     }
     else {
         secondNum = secondNum.toString();
-        secondNum += numberText;
+        secondNum = secondNum === '0' ? numberText : secondNum + numberText;
         setDisplay(secondNum);
-        secondNum = parseFloat(secondNum);
         setOperatorDisplay('');
     }
 }
@@ -158,17 +148,15 @@ function clickNumber(numberText) {
  * @returns Nothing.
  */
 function clickOperator(operatorText) {
-    if (firstNum === '' && displayValue === '') return;
-
     if (firstNum === '' && displayValue !== '') {
-        firstNum = parseFloat(displayValue);
+        firstNum = displayValue;
     }
 
-    if (firstNum !== '' && !firstNumFilled) {
+    if (!firstNumFilled) {
         firstNumFilled = true;
     }
     else if (secondNum !== '') {
-        firstNum = clickEquals();
+        firstNum = clickEquals().toString();
         firstNumFilled = true;
     }
 
@@ -181,10 +169,10 @@ function clickOperator(operatorText) {
 function clickEquals() {
     if (firstNum === '' || secondNum === '') return;
 
-    const solution = operate(operator, firstNum, secondNum);
+    const solution = operate(operator, parseFloat(firstNum), parseFloat(secondNum));
 
     if (solution !== null) {
-        setDisplay(solution);
+        setDisplay(solution.toString());
         setOperatorDisplay('');
         clear();
     }
@@ -202,21 +190,19 @@ function clickDecimal() {
         (firstNumFilled && secondNum.toString().includes('.'))) {
         return;
     }
-    else if (!firstNumFilled && firstNum == '') {
-        firstNum = '.';
-        setDisplay('.');
+    else if (!firstNumFilled && firstNum === '') {
+        firstNum = '0.';
+        setDisplay(firstNum);
     }
-    else if (!firstNumFilled && firstNum !== '') {
-        firstNum = firstNum.toString();
+    else if (!firstNumFilled) {
         firstNum += '.';
         setDisplay(firstNum);
     }
     else if (secondNum === '') {
-        secondNum = '0.0';
-        setDisplay('.');
+        secondNum = '0.';
+        setDisplay(secondNum);
     }
     else {
-        secondNum = secondNum.toString();
         secondNum += '.';
         setDisplay(secondNum);
     }
@@ -256,7 +242,7 @@ buttons.addEventListener("click", (e) => {
             break;
         case "clear":
             clear();
-            setDisplay('');
+            setDisplay('0');
             setOperatorDisplay('');
             break;
         default:
