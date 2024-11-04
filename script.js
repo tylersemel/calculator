@@ -234,7 +234,12 @@ function clickBackspace() {
         if (firstNum === '') {
             return;
         }
-        firstNum = firstNum.length !== 1 ? firstNum.slice(0, firstNum.length - 1) : '0';
+        if (firstNum.length == 2 && firstNum.at(0) == "-") {
+            firstNum = "0";
+        }
+        else {
+            firstNum = firstNum.length !== 1 ? firstNum.slice(0, firstNum.length - 1) : '0';
+        }
         setDisplay(firstNum);
     }
     else {
@@ -242,7 +247,13 @@ function clickBackspace() {
         if (secondNum === '') {
             return;
         }
-        secondNum = secondNum.length !== 1 ? secondNum.slice(0, secondNum.length - 1) : '0';
+        if (secondNum.length == 2 && secondNum.at(0) == "-") {
+            secondNum = "0";
+        }
+        else {
+            secondNum = secondNum.length !== 1 ? secondNum.slice(0, secondNum.length - 1) : '0';
+        }
+        
         setDisplay(secondNum);
     }    
 
@@ -260,6 +271,10 @@ function checkIsOperator(targetId) {
 }
 
 function clickChangeSign() {
+    if (firstNum === '' && displayValue !== '') {
+        firstNum = displayValue;
+    }
+
     if (!firstNumFilled && firstNum !== '0' && firstNum !== '') {
         firstNum = parseFloat(firstNum);
         firstNum = firstNum - (firstNum * 2);
