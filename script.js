@@ -78,10 +78,10 @@ function operate(operator, a, b) {
         case '-':
             result = subtract(a, b);
             break;
-        case '*':
+        case '×':
             result = multiply(a, b);
             break;
-        case '/':
+        case '÷':
             result = divide(a, b);
             break;
         default:
@@ -108,29 +108,6 @@ function displayError(error) {
 function setDisplay(value) {
     display.textContent = value;
     displayValue = value;
-}
-
-/**
- * Based on the string value from the button pressed, set the operator.
- * @param {string} operatorVal 
- */
-function setOperator(operatorVal) {
-    switch (operatorVal) {
-        case '+':
-            operator = '+';
-            break;
-        case '-':
-            operator = '-';
-            break;
-        case '×':
-            operator = '*';
-            break;
-        case '÷':
-            operator = '/';
-            break;
-        default:
-            console.log("Shouldnt be here");
-    }
 }
 
 /**
@@ -178,7 +155,7 @@ function clickNumber(numberText) {
 
 /**
  * When an operator button is clicked. If firstNum is empty, do nothing. Otherwise
- * set that the first num has been filled along with the operator.
+ * set that the first num has been filled along with setting the operator.
  * @param {string} operatorText 
  * @returns Nothing.
  */
@@ -196,8 +173,8 @@ function clickOperator(operatorText) {
     }
 
     if (!hasError) {
-        setOperator(operatorText);
-        setPreviousDisplay();
+        operator = operatorText;
+        setPreviousDisplay(false);
     }
 }
 
