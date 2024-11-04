@@ -291,6 +291,27 @@ function clickChangeSign() {
     setPreviousDisplay();
 }
 
+function clickSquareRoot() {
+    if (firstNum === '' && displayValue !== '') {
+        firstNum = displayValue;
+    }
+
+    if (!firstNumFilled && firstNum !== '0' && firstNum !== '') {
+        firstNum = parseFloat(firstNum);
+        firstNum = Math.sqrt(firstNum);
+        firstNum = firstNum.toString();
+        setDisplay(firstNum);
+    }
+    else if (secondNum !== '') {
+        secondNum = parseFloat(secondNum);
+        secondNum = Math.sqrt(secondNum);
+        secondNum = secondNum.toString();
+        setDisplay(secondNum);
+    }
+
+    setPreviousDisplay();
+}
+
 /**
  * Where all the buttons on the calculator are. From here, the correct functions
  * will be callled according to which button was pressed.
@@ -344,6 +365,9 @@ buttons.addEventListener("click", (e) => {
             break;
         case "change-sign":
             clickChangeSign();
+            break;
+        case "square-root":
+            clickSquareRoot();
             break;
         default:
             console.log("Did not click a button");

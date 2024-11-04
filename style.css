@@ -104,3 +104,7 @@ button:active {
 #backspace, #clear {
     background-color: palevioletred;
 }
+
+#change-sign, #square-root {
+    background-color: aquamarine;
+}
