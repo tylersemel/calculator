@@ -5,7 +5,7 @@ let hasError = false;
 let displayValue = '0';
 
 let display = document.querySelector(".display");
-let operatorDisplay = document.querySelector(".operator-display");
+let operatorDisplay = document.querySelector(".previous-display");
 const buttons = document.querySelector("#buttons");
 
 let firstNumFilled = false;

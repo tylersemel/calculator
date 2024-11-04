@@ -18,27 +18,37 @@ body {
 .calculator {
     padding: 10px;
     border-radius: 10px;
-    background-color: #8b8baa;
+    background-color: #e995cc;
+}
+
+.display-container {
+    background-color: rgb(254, 228, 255);
+    border-radius: 10px;
+    margin-bottom: 20px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-end;
+    padding: 0 15px;
 }
 
 .display {
-    background-color: lightgray;
-    padding: 4px;
-    border-radius: 10px;
-    border: 2px solid black;
-    margin-bottom: 10px;
-    /* margin: 0 auto; */
+    font-size: 56px;
+}
+
+.previous-display {
+    height: 40px;
+    color: gray;
+    font-size: 36px;
+
 }
 
 .back {
-    background-color: #C9C9EE;
-    width: 500px;
-    padding: 10px;
+    background-color: #d364ac;
+    width: 600px;
+    padding: 20px;
     border-radius: 10px;
-    /* border: 2px solid grey; */
-    /* display: flex;
-    flex-direction: column;
-    justify-content: center; */
 }
 
 #buttons {
@@ -47,8 +57,8 @@ body {
     align-items: center;
     gap: 10px;
     flex-wrap: wrap;
-    background-color: #e5e5ff;
-    padding: 10px;
+    background-color: #e2c6f0;
+    padding: 18px;
     border-radius: 10px;
 }
 
@@ -72,6 +82,12 @@ button:hover {
 button:active {
     transform: translateY(2px);
     box-shadow: 0 5px rgb(54, 45, 83);
+}
+
+
+
+.operator:focus {
+    background-image: linear-gradient(rgb(0 0 0/15%) 0 0);
 }
 
 .number {
