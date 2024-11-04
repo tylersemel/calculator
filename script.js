@@ -3,9 +3,10 @@ let operator = '';
 let secondNum = '';
 let hasError = false;
 let displayValue = '0';
+let prevDisplayValue = '0';
 
 let display = document.querySelector(".display");
-let operatorDisplay = document.querySelector(".previous-display");
+let prevDisplay = document.querySelector(".previous-display");
 const buttons = document.querySelector("#buttons");
 
 let firstNumFilled = false;
@@ -97,7 +98,6 @@ function operate(operator, a, b) {
  */
 function displayError(error) {
     setDisplay(error);
-    setOperatorDisplay('');
     clear();
     hasError = true;
 }
@@ -134,8 +134,12 @@ function setOperator(operatorVal) {
     }
 }
 
-function setOperatorDisplay(operator) {
-    operatorDisplay.textContent = '';//operator;
+function setPreviousDisplay(isSolution) {
+    prevDisplay.textContent = firstNum + " " + operator + " " + secondNum;
+
+    if (isSolution) {
+        prevDisplay.textContent += " =";
+    }
 }
 
 /**
@@ -164,8 +168,9 @@ function clickNumber(numberText) {
         secondNum = secondNum.toString();
         secondNum = secondNum === '0' ? numberText : secondNum + numberText;
         setDisplay(secondNum);
-        setOperatorDisplay('');
     }
+
+    setPreviousDisplay();
 }
 
 /**
@@ -189,7 +194,7 @@ function clickOperator(operatorText) {
 
     if (!hasError) {
         setOperator(operatorText);
-        setOperatorDisplay(operatorText);
+        setPreviousDisplay();
     }
 }
 
@@ -205,7 +210,7 @@ function clickEquals() {
 
     if (solution !== null) {
         setDisplay(solution.toString());
-        setOperatorDisplay('');
+        setPreviousDisplay(true);
         clear();
     }
     
@@ -251,6 +256,7 @@ function clickBackspace() {
         }
         firstNum = firstNum.slice(0, firstNum.length - 1);
         setDisplay(firstNum);
+        setPreviousDisplay()
     }
     else {
         secondNum = secondNum.toString();
@@ -259,7 +265,7 @@ function clickBackspace() {
         }
         secondNum = secondNum.slice(0, secondNum.length - 1);
         setDisplay(secondNum);
-        setOperatorDisplay('');
+        setPreviousDisplay()
     }    
 }
 
@@ -319,7 +325,7 @@ buttons.addEventListener("click", (e) => {
         case "clear":
             clear();
             setDisplay('0');
-            setOperatorDisplay('');
+            setPreviousDisplay('');
             break;
         case "backspace":
             clickBackspace();
