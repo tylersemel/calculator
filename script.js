@@ -241,6 +241,29 @@ function clickDecimal() {
 }
 
 /**
+ * Undo last input (not including the operator).
+ */
+function clickBackspace() {
+    if (!firstNumFilled) {
+        firstNum = firstNum.toString();
+        if (firstNum === '') {
+            return;
+        }
+        firstNum = firstNum.slice(0, firstNum.length - 1);
+        setDisplay(firstNum);
+    }
+    else {
+        secondNum = secondNum.toString();
+        if (secondNum === '') {
+            return;
+        }
+        secondNum = secondNum.slice(0, secondNum.length - 1);
+        setDisplay(secondNum);
+        setOperatorDisplay('');
+    }    
+}
+
+/**
  * Where all the buttons on the calculator are. From here, the correct functions
  * will be callled according to which button was pressed.
  */
@@ -280,6 +303,9 @@ buttons.addEventListener("click", (e) => {
             clear();
             setDisplay('0');
             setOperatorDisplay('');
+            break;
+        case "backspace":
+            clickBackspace();
             break;
         default:
             console.log("Did not click a button");
