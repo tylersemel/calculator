@@ -1,7 +1,7 @@
 * {
     box-sizing: border-box;
-    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     font-size: 30px;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
 }
 
 body {
@@ -57,7 +57,7 @@ body {
     align-items: center;
     gap: 10px;
     flex-wrap: wrap;
-    background-color: #e2c6f0;
+    background-color: #e9c8ef;
     padding: 18px;
     border-radius: 10px;
 }
@@ -84,23 +84,21 @@ button:active {
     box-shadow: 0 5px rgb(54, 45, 83);
 }
 
-
-
 .operator:focus {
     background-image: linear-gradient(rgb(0 0 0/15%) 0 0);
 }
 
 .number {
-    background-color: paleturquoise;
+    background-color: rgb(153, 221, 243);
 }
 
 .operator {
-    background-color: palegreen;
+    background-color: rgb(242, 110, 209);
     font-size: 46px;
 }
 
 #equals {
-    background-color: palegoldenrod;
+    background-color: rgb(144, 149, 252);
 }
 
 #backspace, #clear {
