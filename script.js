@@ -133,6 +133,10 @@ function setOperator(operatorVal) {
     }
 }
 
+/**
+ * Set the display for the previous calculations. If the previous
+ * solution was pressed with the equals, then that is added.
+ */
 function setPreviousDisplay(isSolution) {
     prevDisplay.textContent = firstNum + " " + operator + " " + secondNum;
 
@@ -255,7 +259,6 @@ function clickBackspace() {
         }
         firstNum = firstNum.length !== 1 ? firstNum.slice(0, firstNum.length - 1) : '0';
         setDisplay(firstNum);
-        setPreviousDisplay()
     }
     else {
         secondNum = secondNum.toString();
@@ -264,8 +267,9 @@ function clickBackspace() {
         }
         secondNum = secondNum.length !== 1 ? secondNum.slice(0, secondNum.length - 1) : '0';
         setDisplay(secondNum);
-        setPreviousDisplay()
     }    
+
+    setPreviousDisplay();
 }
 
 function checkIsNumber(targetId) {
