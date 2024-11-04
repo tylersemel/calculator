@@ -3,7 +3,6 @@ let operator = '';
 let secondNum = '';
 let hasError = false;
 let displayValue = '0';
-let prevDisplayValue = '0';
 
 let display = document.querySelector(".display");
 let prevDisplay = document.querySelector(".previous-display");
@@ -254,7 +253,7 @@ function clickBackspace() {
         if (firstNum === '') {
             return;
         }
-        firstNum = firstNum.slice(0, firstNum.length - 1);
+        firstNum = firstNum.length !== 1 ? firstNum.slice(0, firstNum.length - 1) : '0';
         setDisplay(firstNum);
         setPreviousDisplay()
     }
@@ -263,7 +262,7 @@ function clickBackspace() {
         if (secondNum === '') {
             return;
         }
-        secondNum = secondNum.slice(0, secondNum.length - 1);
+        secondNum = secondNum.length !== 1 ? secondNum.slice(0, secondNum.length - 1) : '0';
         setDisplay(secondNum);
         setPreviousDisplay()
     }    
