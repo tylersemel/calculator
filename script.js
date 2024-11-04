@@ -263,6 +263,16 @@ function clickBackspace() {
     }    
 }
 
+function checkIsNumber(targetId) {
+    const numbers = "0123456789";
+    return numbers.includes(targetId);
+}
+
+function checkIsOperator(targetId) {
+    const operators ="+-*/";
+    return operators.includes(targetId);
+}
+
 /**
  * Where all the buttons on the calculator are. From here, the correct functions
  * will be callled according to which button was pressed.
@@ -271,11 +281,11 @@ buttons.addEventListener("click", (e) => {
     let targetId = null;
 
     if (e.target.matches('button')) {
-        targetId = e.target.parentNode.id && e.target.parentNode.id !== "buttons" ? e.target.parentNode.id : e.target.id;
+        targetId = e.target.id;
     }
 
     if (hasError &&
-        (targetId === "numbers" ||
+        (checkIsNumber(targetId) ||
         targetId === "clear" ||
         targetId === "equals"          
         )) {
@@ -284,6 +294,13 @@ buttons.addEventListener("click", (e) => {
     }
     else if (hasError) {
         return;
+    }
+
+    if (checkIsNumber(targetId)) {
+        targetId = "numbers";
+    }
+    else if (checkIsOperator(targetId)) {
+        targetId = "operators"
     }
 
     switch(targetId) {
