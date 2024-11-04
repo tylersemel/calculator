@@ -61,6 +61,13 @@ function divide(a, b) {
     return a / b;
 }
 
+/**
+ * Operate on the two given numbers and return that result.
+ * @param {string} operator 
+ * @param {number} a 
+ * @param {number} b 
+ * @returns the calculation between two numbers and their operator.
+ */
 function operate(operator, a, b) {
     let result = null;
 
@@ -84,6 +91,10 @@ function operate(operator, a, b) {
     return result;
 }
 
+/**
+ * Display an error if there is one, for example divide by zero.
+ * @param {string} error the error message to be displayed.
+ */
 function displayError(error) {
     setDisplay(error);
     setOperatorDisplay('');
@@ -91,11 +102,19 @@ function displayError(error) {
     hasError = true;
 }
 
+/**
+ * Show the value of the number or calculation on the calculator's display.
+ * @param {string} value 
+ */
 function setDisplay(value) {
     display.textContent = value;
     displayValue = value;
 }
 
+/**
+ * Based on the string value from the button pressed, set the operator.
+ * @param {string} operatorVal 
+ */
 function setOperator(operatorVal) {
     switch (operatorVal) {
         case '+':
@@ -119,6 +138,9 @@ function setOperatorDisplay(operator) {
     operatorDisplay.textContent = '';//operator;
 }
 
+/**
+ * Clear the data from the global values of the calculator.
+ */
 function clear() {
     firstNum = '';
     operator = '';
@@ -127,6 +149,11 @@ function clear() {
     hasError = false;
 }
 
+/**
+ * When a number button is clicked. Set firstNum or secondNum depending on
+ * where in the calculation the user is.
+ * @param {string} numberText 
+ */
 function clickNumber(numberText) {
     if (!firstNumFilled) {
         firstNum = firstNum.toString();
@@ -166,6 +193,11 @@ function clickOperator(operatorText) {
     }
 }
 
+/**
+ * If either number is empty, nothing is to be done. Otherwise, calculate
+ * the solution of firstNum and secondNum and display that solution (if not null).
+ * @returns The solution of two numbers and their operator.
+ */
 function clickEquals() {
     if (firstNum === '' || secondNum === '') return;
 
@@ -208,6 +240,10 @@ function clickDecimal() {
     }
 }
 
+/**
+ * Where all the buttons on the calculator are. From here, the correct functions
+ * will be callled according to which button was pressed.
+ */
 buttons.addEventListener("click", (e) => {
     let targetId = null;
 
