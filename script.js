@@ -259,6 +259,23 @@ function checkIsOperator(targetId) {
     return operators.includes(targetId);
 }
 
+function clickChangeSign() {
+    if (!firstNumFilled && firstNum !== '0' && firstNum !== '') {
+        firstNum = parseFloat(firstNum);
+        firstNum = firstNum - (firstNum * 2);
+        firstNum = firstNum.toString();
+        setDisplay(firstNum);
+    }
+    else if (secondNum !== '') {
+        secondNum = parseFloat(secondNum);
+        secondNum = secondNum - (secondNum * 2);
+        secondNum = secondNum.toString();
+        setDisplay(secondNum);
+    }
+
+    setPreviousDisplay();
+}
+
 /**
  * Where all the buttons on the calculator are. From here, the correct functions
  * will be callled according to which button was pressed.
@@ -309,6 +326,9 @@ buttons.addEventListener("click", (e) => {
             break;
         case "backspace":
             clickBackspace();
+            break;
+        case "change-sign":
+            clickChangeSign();
             break;
         default:
             console.log("Did not click a button");
