@@ -312,6 +312,24 @@ function clickSquareRoot() {
     }
 }
 
+function checkError(targetId) {
+    if (hasError &&
+        (checkIsNumber(targetId) ||
+        targetId === "clear" ||
+        targetId === "equals"          
+        )) {
+
+        clear();
+        hasError = false;
+        return false;
+    }
+    else if (hasError) {
+        return true;
+    }
+
+    return false;
+}
+
 /**
  * Where all the buttons on the calculator are. From here, the correct functions
  * will be callled according to which button was pressed.
@@ -323,17 +341,7 @@ buttons.addEventListener("click", (e) => {
         targetId = e.target.id;
     }
 
-    if (hasError &&
-        (checkIsNumber(targetId) ||
-        targetId === "clear" ||
-        targetId === "equals"          
-        )) {
-            clear();
-            hasError = false;
-    }
-    else if (hasError) {
-        return;
-    }
+    if (checkError(targetId)) return;
 
     if (checkIsNumber(targetId)) {
         targetId = "numbers";
