@@ -297,19 +297,19 @@ function clickSquareRoot() {
     }
 
     if (!firstNumFilled && firstNum !== '0' && firstNum !== '') {
+        prevDisplay.textContent = "√" + firstNum;
         firstNum = parseFloat(firstNum);
         firstNum = Math.sqrt(firstNum);
         firstNum = firstNum.toString();
         setDisplay(firstNum);
     }
     else if (secondNum !== '') {
+        prevDisplay.textContent = "√" + secondNum;
         secondNum = parseFloat(secondNum);
         secondNum = Math.sqrt(secondNum);
         secondNum = secondNum.toString();
         setDisplay(secondNum);
     }
-
-    setPreviousDisplay();
 }
 
 /**
