@@ -84,6 +84,11 @@ button:active {
     box-shadow: 0 5px rgb(54, 45, 83);
 }
 
+button:disabled {
+    background-image: linear-gradient(rgb(0 0 0/25%) 0 0);
+    cursor:not-allowed;
+}
+
 .operator:focus {
     background-image: linear-gradient(rgb(0 0 0/15%) 0 0);
 }

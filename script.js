@@ -9,6 +9,7 @@ let hasError = false;
 const PRECISION = 5;
 const ERROR_MESSAGE = "Hrmmm not quite";
 const buttons = document.querySelector("#buttons");
+const decimalBtn = document.querySelector("#decimal");
 
 let display = document.querySelector(".display");
 let prevDisplay = document.querySelector(".previous-display");
@@ -145,12 +146,6 @@ function setSecondNum(val) {
     }
 }
 
-function setFirstToDisplay() {
-    if (firstNum === '' && displayValue !== '') {
-        firstNum = displayValue;
-    }
-}
-
 /**
  * When a number button is clicked. Set firstNum or secondNum depending on
  * where in the calculation the user is.
@@ -180,7 +175,6 @@ function clickOperator(operatorText) {
 
     if (!firstNumFilled) {
         firstNumFilled = true;
-        
     }
     else if (secondNum !== '') {
         setFirstNum(clickEquals().toString());
@@ -188,6 +182,9 @@ function clickOperator(operatorText) {
     }
 
     if (!hasError) {
+        if (decimalBtn.disabled) {
+            decimalBtn.toggleAttribute('disabled');
+        }
         operator = operatorText;
         setPreviousDisplay(`${firstNum} ${operator}`);
     }
@@ -201,21 +198,15 @@ function clickOperator(operatorText) {
 function clickEquals() {
     if (firstNum === '' || secondNum === '') return;
 
-    let prevFirst = firstNum;
-    let prevSecond = secondNum;
-
-    if (firstNum.at(0) == '√') {
-        firstNum = setSquareRoot(firstNum.substring(1));
-    }
-    if (secondNum.at(0) == '√') {
-        secondNum = setSquareRoot(secondNum.substring(1));
+    if (decimalBtn.disabled) {
+        decimalBtn.toggleAttribute('disabled');
     }
 
     const solution = operate(operator, parseFloat(firstNum), parseFloat(secondNum));
 
     if (solution !== null) {
         setDisplay(solution.toString());
-        setPreviousDisplay(`${prevFirst} ${operator} ${prevSecond} =`);
+        setPreviousDisplay(`${firstNum} ${operator} ${secondNum} =`);
         clear();
     }
     
@@ -241,6 +232,8 @@ function clickDecimal() {
         setSecondNum('.');
         setDisplay(secondNum);
     }
+
+    decimalBtn.toggleAttribute('disabled');
 }
 
 function removeCharacter(num) {
@@ -258,11 +251,11 @@ function removeCharacter(num) {
  * Undo last input (not including the operator).
  */
 function clickBackspace() { 
-    if (!firstNumFilled && firstNum !== '' && firstNum.at(0) !== "√") {
+    if (!firstNumFilled && firstNum !== '') {
         firstNum = removeCharacter(firstNum);
         setDisplay(firstNum);
     }
-    else if (secondNum !== '' && secondNum !== "√") {
+    else if (secondNum !== '') {
         secondNum = removeCharacter(secondNum);
         setDisplay(secondNum);
     }  
@@ -286,7 +279,9 @@ function changeSign(num) {
 }
 
 function clickChangeSign() {
-    setFirstToDisplay();
+    if (firstNum === '' && displayValue !== '') {
+        firstNum = displayValue;
+    }
 
     if (!firstNumFilled && firstNum !== '' && displayValue !== '') {
         firstNum = changeSign(firstNum);
@@ -297,34 +292,6 @@ function clickChangeSign() {
         setDisplay(secondNum);
     }  
 }
-
-// function setSquareRoot(num) {
-//     num = parseFloat(num);
-
-//     if (num < 0) {
-//         setError(ERROR_MESSAGE);
-//         return ERROR_MESSAGE;
-//     }
-
-//     num = Math.sqrt(num);
-//     num = num.toString();
-//     return num;
-// }
-
-// function clickSquareRoot() {
-//     setFirstToDisplay();
-
-//     if (!firstNumFilled && firstNum !== '' && firstNum.at(0) !== "√") {
-//         setDisplay(setSquareRoot(firstNum));
-//         firstNum = "√" + firstNum;
-//         setPreviousDisplay(`${firstNum} ${operator}`);
-//     }
-//     else if (secondNum !== '' && secondNum.at(0) !== "√") {
-//         setDisplay(setSquareRoot(secondNum));
-//         secondNum = "√" + secondNum;
-//         setPreviousDisplay(`${firstNum} ${operator} ${secondNum}`);
-//     } 
-// }
 
 function checkError(targetId) {
     if (hasError &&
