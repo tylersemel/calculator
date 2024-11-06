@@ -197,7 +197,12 @@ function clickOperator(operatorText) {
  * @returns The solution of two numbers and their operator.
  */
 function clickEquals() {
-    if (firstNum === '' || secondNum === '') return;
+    if (firstNum === '') {
+        return;
+    }
+    else if (secondNum === '') {
+        secondNum = displayValue;
+    }
 
     if (decimalBtn.disabled) {
         decimalBtn.toggleAttribute('disabled');
