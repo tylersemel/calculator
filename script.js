@@ -1,27 +1,21 @@
 let firstNum = '';
 let operator = '';
 let secondNum = '';
-let hasError = false;
 let displayValue = '0';
-
-let display = document.querySelector(".display");
-let prevDisplay = document.querySelector(".previous-display");
-const buttons = document.querySelector("#buttons");
-
+let prevDisplayValue = '';
 let firstNumFilled = false;
+let hasError = false;
+
 
 const PRECISION = 5;
 const ERROR_MESSAGE = "Hrmmm not quite";
+const buttons = document.querySelector("#buttons");
 
-// flow: if no numbers entered, after operator is false
-// then press firstNum -> call numbers event
-// then press operator 
-// then press secondNum 
-// either then press = or another operator
-// if = then call calculate and reset everything, completing the loop
+let display = document.querySelector(".display");
+let prevDisplay = document.querySelector(".previous-display");
 
 function checkWholeNumber(num) {
-    return num % 1 == 0;
+    return num % 1 === 0;
 }
 
 function add(a, b) {
@@ -50,7 +44,7 @@ function multiply(a, b) {
 
 function divide(a, b) {
     if (b === 0) {
-        displayError(ERROR_MESSAGE);
+        setError(ERROR_MESSAGE);
         return null;
     }
 
@@ -95,7 +89,7 @@ function operate(operator, a, b) {
  * Display an error if there is one, for example divide by zero.
  * @param {string} error the error message to be displayed.
  */
-function displayError(error) {
+function setError(error) {
     setDisplay(error);
     clear();
     hasError = true;
@@ -114,13 +108,10 @@ function setDisplay(value) {
  * Set the display for the previous calculations. If the previous
  * solution was pressed with the equals, then that is added.
  */
-function setPreviousDisplay(isSolution) {
-    prevDisplay.textContent = firstNum + " " + operator + " " + secondNum;
-
-    if (isSolution) {
-        prevDisplay.textContent += " =";
-    }
+function setPreviousDisplay(val) {
+    prevDisplay.textContent = firstNum + ' ' + operator + ' ' + secondNum + val;
 }
+
 
 /**
  * Clear the data from the global values of the calculator.
@@ -133,6 +124,38 @@ function clear() {
     hasError = false;
 }
 
+function setFirstNum(val) {
+    firstNum = firstNum.toString();
+
+    if ((firstNum === '' || firstNum === '0') && val === '.') {
+        firstNum = '0.';
+    }
+    else {
+        firstNum = firstNum === '0' ? val : firstNum + val;
+    }
+
+    prevFirst = firstNum;
+}
+
+function setSecondNum(val) {
+    secondNum = secondNum.toString();
+    
+    if ((secondNum === '' || secondNum === '0') && val === '.') {
+        secondNum = '0.';
+    }
+    else {
+        secondNum = secondNum === '0' ? val : secondNum + val;
+    }
+
+    prevSecond = secondNum;
+}
+
+function setFirstToDisplay() {
+    if (firstNum === '' && displayValue !== '') {
+        firstNum = displayValue;
+    }
+}
+
 /**
  * When a number button is clicked. Set firstNum or secondNum depending on
  * where in the calculation the user is.
@@ -140,17 +163,13 @@ function clear() {
  */
 function clickNumber(numberText) {
     if (!firstNumFilled) {
-        firstNum = firstNum.toString();
-        firstNum = firstNum === '0' ? numberText : firstNum + numberText;
+        setFirstNum(numberText);
         setDisplay(firstNum);
     }
     else {
-        secondNum = secondNum.toString();
-        secondNum = secondNum === '0' ? numberText : secondNum + numberText;
+        setSecondNum(numberText);
         setDisplay(secondNum);
     }
-
-    setPreviousDisplay();
 }
 
 /**
@@ -166,15 +185,16 @@ function clickOperator(operatorText) {
 
     if (!firstNumFilled) {
         firstNumFilled = true;
+        
     }
     else if (secondNum !== '') {
-        firstNum = clickEquals().toString();
+        setFirstNum(clickEquals().toString());
         firstNumFilled = true;
     }
 
     if (!hasError) {
         operator = operatorText;
-        setPreviousDisplay(false);
+        setPreviousDisplay('');
     }
 }
 
@@ -186,11 +206,21 @@ function clickOperator(operatorText) {
 function clickEquals() {
     if (firstNum === '' || secondNum === '') return;
 
+    let prevFirst = firstNum;
+    let prevSecond = secondNum;
+
+    if (firstNum.at(0) == '√') {
+        firstNum = setSquareRoot(firstNum.substring(1));
+    }
+    if (secondNum.at(0) == '√') {
+        secondNum = setSquareRoot(secondNum.substring(1));
+    }
+
     const solution = operate(operator, parseFloat(firstNum), parseFloat(secondNum));
 
     if (solution !== null) {
         setDisplay(solution.toString());
-        setPreviousDisplay(true);
+        prevDisplay.textContent = prevFirst + ' ' + operator + ' ' + prevSecond + '=';
         clear();
     }
     
@@ -207,57 +237,44 @@ function clickDecimal() {
         (firstNumFilled && secondNum.toString().includes('.'))) {
         return;
     }
-    else if (!firstNumFilled && firstNum === '') {
-        firstNum = '0.';
+
+    if (!firstNumFilled) {
+        setFirstNum('.');
         setDisplay(firstNum);
-    }
-    else if (!firstNumFilled) {
-        firstNum += '.';
-        setDisplay(firstNum);
-    }
-    else if (secondNum === '') {
-        secondNum = '0.';
-        setDisplay(secondNum);
     }
     else {
-        secondNum += '.';
+        setSecondNum('.');
         setDisplay(secondNum);
     }
+}
+
+function removeCharacter(num) {
+    num = num.toString();
+
+    if ((num.length === 2 && num.at(0) === '-') || num.length === 1) {
+        return '0';
+    }
+    else {
+        return num.slice(0, num.length - 1);
+    }
+}
+
+function changeNumbers(func) {
+    if (!firstNumFilled && firstNum !== '') {
+        firstNum = func(firstNum);
+        setDisplay(firstNum);
+    }
+    else if (secondNum !== '') {
+        secondNum = func(secondNum);
+        setDisplay(secondNum);
+    }  
 }
 
 /**
  * Undo last input (not including the operator).
  */
-function clickBackspace() {
-    if (!firstNumFilled) {
-        firstNum = firstNum.toString();
-        if (firstNum === '') {
-            return;
-        }
-        if (firstNum.length == 2 && firstNum.at(0) == "-") {
-            firstNum = "0";
-        }
-        else {
-            firstNum = firstNum.length !== 1 ? firstNum.slice(0, firstNum.length - 1) : '0';
-        }
-        setDisplay(firstNum);
-    }
-    else {
-        secondNum = secondNum.toString();
-        if (secondNum === '') {
-            return;
-        }
-        if (secondNum.length == 2 && secondNum.at(0) == "-") {
-            secondNum = "0";
-        }
-        else {
-            secondNum = secondNum.length !== 1 ? secondNum.slice(0, secondNum.length - 1) : '0';
-        }
-        
-        setDisplay(secondNum);
-    }    
-
-    setPreviousDisplay();
+function clickBackspace() { 
+    changeNumbers(removeCharacter);
 }
 
 function checkIsNumber(targetId) {
@@ -270,51 +287,50 @@ function checkIsOperator(targetId) {
     return operators.includes(targetId);
 }
 
+function changeSign(num) {
+    num = parseFloat(num);
+    num = num - (num * 2);
+    num = num.toString();
+    return num;
+}
+
 function clickChangeSign() {
-    if (firstNum === '' && displayValue !== '') {
-        firstNum = displayValue;
+    setFirstToDisplay();
+    changeNumbers(changeSign);
+}
+
+function setSquareRoot(num) {
+    num = parseFloat(num);
+
+    if (num < 0) {
+        setError(ERROR_MESSAGE);
+        return ERROR_MESSAGE;
     }
 
-    if (!firstNumFilled && firstNum !== '0' && firstNum !== '') {
-        firstNum = parseFloat(firstNum);
-        firstNum = firstNum - (firstNum * 2);
-        firstNum = firstNum.toString();
-        setDisplay(firstNum);
-    }
-    else if (secondNum !== '') {
-        secondNum = parseFloat(secondNum);
-        secondNum = secondNum - (secondNum * 2);
-        secondNum = secondNum.toString();
-        setDisplay(secondNum);
-    }
-
-    setPreviousDisplay();
+    num = Math.sqrt(num);
+    num = num.toString();
+    return num;
 }
 
 function clickSquareRoot() {
-    if (firstNum === '' && displayValue !== '') {
-        firstNum = displayValue;
-    }
-
-    if (!firstNumFilled && firstNum !== '0' && firstNum !== '') {
-        prevDisplay.textContent = "√" + firstNum;
-        firstNum = parseFloat(firstNum);
-        firstNum = Math.sqrt(firstNum);
-        firstNum = firstNum.toString();
-        setDisplay(firstNum);
+    setFirstToDisplay();
+    
+    if (!firstNumFilled && firstNum !== '') {
+        setDisplay(setSquareRoot(firstNum));
+        firstNum = "√" + firstNum;
+        setPreviousDisplay('');
     }
     else if (secondNum !== '') {
-        prevDisplay.textContent = "√" + secondNum;
-        secondNum = parseFloat(secondNum);
-        secondNum = Math.sqrt(secondNum);
-        secondNum = secondNum.toString();
-        setDisplay(secondNum);
-    }
+        setDisplay(setSquareRoot(secondNum));
+        secondNum = "√" + secondNum;
+        setPreviousDisplay('');
+    } 
+
 }
 
 function checkError(targetId) {
     if (hasError &&
-        (checkIsNumber(targetId) ||
+        (targetId === "numbers" ||
         targetId === "clear" ||
         targetId === "equals"          
         )) {
@@ -341,14 +357,14 @@ buttons.addEventListener("click", (e) => {
         targetId = e.target.id;
     }
 
-    if (checkError(targetId)) return;
-
     if (checkIsNumber(targetId)) {
         targetId = "numbers";
     }
     else if (checkIsOperator(targetId)) {
         targetId = "operators"
     }
+
+    if (checkError(targetId)) return;
 
     switch(targetId) {
         case "numbers":
@@ -366,7 +382,7 @@ buttons.addEventListener("click", (e) => {
         case "clear":
             clear();
             setDisplay('0');
-            setPreviousDisplay('');
+            setPreviousDisplay('', '', '');
             break;
         case "backspace":
             clickBackspace();
