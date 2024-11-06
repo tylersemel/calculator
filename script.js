@@ -10,6 +10,7 @@ const PRECISION = 5;
 const ERROR_MESSAGE = "Hrmmm not quite";
 const buttons = document.querySelector("#buttons");
 const decimalBtn = document.querySelector("#decimal");
+const operators ="+-*/";
 
 let display = document.querySelector(".display");
 let prevDisplay = document.querySelector(".previous-display");
@@ -267,7 +268,6 @@ function checkIsNumber(targetId) {
 }
 
 function checkIsOperator(targetId) {
-    const operators ="+-*/";
     return operators.includes(targetId);
 }
 
@@ -377,3 +377,38 @@ buttons.addEventListener("click", (e) => {
             console.log("Did not click a button");
     }
 });
+
+/**
+ * If a user wants to enter numbers and operations with the keyboard.
+ */
+document.addEventListener("keydown", (e) => {
+    if (parseFloat(e.key) >= 0 && parseFloat(e.key) <= 9) {
+        clickNumber(e.key);
+    }
+    else if (e.key === '.') {
+        clickDecimal();
+    }
+    else if (operators.includes(e.key)) {
+        let key = e.key;
+
+        if (e.key === '/') {
+            key = '÷';
+        }
+        else if (e.key === '*') {
+            key = '×';
+        }
+
+        clickOperator(key);
+    }
+    else if (e.key === 'Enter' || e.key === '=') {
+        clickEquals();
+    }
+    else if (e.key === 'Backspace') {
+        clickBackspace();
+    }
+    else if (e.key === 'c' || e.key === 'C') {
+        clear();
+        setDisplay('0');
+        setPreviousDisplay('');
+    }
+})
