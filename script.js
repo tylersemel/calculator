@@ -292,7 +292,8 @@ function clickChangeSign() {
         firstNum = changeSign(firstNum);
         setDisplay(firstNum);
     }
-    else if (secondNum !== '') {
+    else {
+        secondNum = displayValue;
         secondNum = changeSign(secondNum);
         setDisplay(secondNum);
     }  
