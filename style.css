@@ -101,10 +101,10 @@ button:active {
     background-color: rgb(144, 149, 252);
 }
 
-#backspace, #clear {
+#backspace, #clear, #clear-line {
     background-color: palevioletred;
 }
 
-#change-sign, #square-root {
+#change-sign {
     background-color: aquamarine;
 }

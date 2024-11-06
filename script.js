@@ -6,7 +6,6 @@ let prevDisplayValue = '';
 let firstNumFilled = false;
 let hasError = false;
 
-
 const PRECISION = 5;
 const ERROR_MESSAGE = "Hrmmm not quite";
 const buttons = document.querySelector("#buttons");
@@ -108,8 +107,8 @@ function setDisplay(value) {
  * Set the display for the previous calculations. If the previous
  * solution was pressed with the equals, then that is added.
  */
-function setPreviousDisplay(val) {
-    prevDisplay.textContent = firstNum + ' ' + operator + ' ' + secondNum + val;
+function setPreviousDisplay(value) {
+    prevDisplay.textContent = value;
 }
 
 
@@ -133,8 +132,6 @@ function setFirstNum(val) {
     else {
         firstNum = firstNum === '0' ? val : firstNum + val;
     }
-
-    prevFirst = firstNum;
 }
 
 function setSecondNum(val) {
@@ -146,8 +143,6 @@ function setSecondNum(val) {
     else {
         secondNum = secondNum === '0' ? val : secondNum + val;
     }
-
-    prevSecond = secondNum;
 }
 
 function setFirstToDisplay() {
@@ -194,7 +189,7 @@ function clickOperator(operatorText) {
 
     if (!hasError) {
         operator = operatorText;
-        setPreviousDisplay('');
+        setPreviousDisplay(`${firstNum} ${operator}`);
     }
 }
 
@@ -220,7 +215,7 @@ function clickEquals() {
 
     if (solution !== null) {
         setDisplay(solution.toString());
-        prevDisplay.textContent = prevFirst + ' ' + operator + ' ' + prevSecond + '=';
+        setPreviousDisplay(`${prevFirst} ${operator} ${prevSecond} =`);
         clear();
     }
     
@@ -259,22 +254,18 @@ function removeCharacter(num) {
     }
 }
 
-function changeNumbers(func) {
-    if (!firstNumFilled && firstNum !== '') {
-        firstNum = func(firstNum);
-        setDisplay(firstNum);
-    }
-    else if (secondNum !== '') {
-        secondNum = func(secondNum);
-        setDisplay(secondNum);
-    }  
-}
-
 /**
  * Undo last input (not including the operator).
  */
 function clickBackspace() { 
-    changeNumbers(removeCharacter);
+    if (!firstNumFilled && firstNum !== '' && firstNum.at(0) !== "√") {
+        firstNum = removeCharacter(firstNum);
+        setDisplay(firstNum);
+    }
+    else if (secondNum !== '' && secondNum !== "√") {
+        secondNum = removeCharacter(secondNum);
+        setDisplay(secondNum);
+    }  
 }
 
 function checkIsNumber(targetId) {
@@ -296,37 +287,44 @@ function changeSign(num) {
 
 function clickChangeSign() {
     setFirstToDisplay();
-    changeNumbers(changeSign);
-}
 
-function setSquareRoot(num) {
-    num = parseFloat(num);
-
-    if (num < 0) {
-        setError(ERROR_MESSAGE);
-        return ERROR_MESSAGE;
-    }
-
-    num = Math.sqrt(num);
-    num = num.toString();
-    return num;
-}
-
-function clickSquareRoot() {
-    setFirstToDisplay();
-    
-    if (!firstNumFilled && firstNum !== '') {
-        setDisplay(setSquareRoot(firstNum));
-        firstNum = "√" + firstNum;
-        setPreviousDisplay('');
+    if (!firstNumFilled && firstNum !== '' && displayValue !== '') {
+        firstNum = changeSign(firstNum);
+        setDisplay(firstNum);
     }
     else if (secondNum !== '') {
-        setDisplay(setSquareRoot(secondNum));
-        secondNum = "√" + secondNum;
-        setPreviousDisplay('');
-    } 
-
+        secondNum = changeSign(secondNum);
+        setDisplay(secondNum);
+    }  
 }
+
+// function setSquareRoot(num) {
+//     num = parseFloat(num);
+
+//     if (num < 0) {
+//         setError(ERROR_MESSAGE);
+//         return ERROR_MESSAGE;
+//     }
+
+//     num = Math.sqrt(num);
+//     num = num.toString();
+//     return num;
+// }
+
+// function clickSquareRoot() {
+//     setFirstToDisplay();
+
+//     if (!firstNumFilled && firstNum !== '' && firstNum.at(0) !== "√") {
+//         setDisplay(setSquareRoot(firstNum));
+//         firstNum = "√" + firstNum;
+//         setPreviousDisplay(`${firstNum} ${operator}`);
+//     }
+//     else if (secondNum !== '' && secondNum.at(0) !== "√") {
+//         setDisplay(setSquareRoot(secondNum));
+//         secondNum = "√" + secondNum;
+//         setPreviousDisplay(`${firstNum} ${operator} ${secondNum}`);
+//     } 
+// }
 
 function checkError(targetId) {
     if (hasError &&
@@ -344,6 +342,21 @@ function checkError(targetId) {
     }
 
     return false;
+}
+
+/**
+ * Clears only the current display
+ */
+function clickClearLine() {
+    setDisplay('0');
+    
+    if (!firstNumFilled && (firstNum !== '' || (firstNum !== display && secondNum === ''))) {
+        firstNum = '';
+        setPreviousDisplay('');
+    }
+    else if (secondNum !== '') {
+        secondNum = '';
+    }
 }
 
 /**
@@ -382,7 +395,7 @@ buttons.addEventListener("click", (e) => {
         case "clear":
             clear();
             setDisplay('0');
-            setPreviousDisplay('', '', '');
+            setPreviousDisplay('');
             break;
         case "backspace":
             clickBackspace();
@@ -390,8 +403,8 @@ buttons.addEventListener("click", (e) => {
         case "change-sign":
             clickChangeSign();
             break;
-        case "square-root":
-            clickSquareRoot();
+        case "clear-line":
+            clickClearLine();
             break;
         default:
             console.log("Did not click a button");
